@@ -1,6 +1,8 @@
-const CACHE_NAME = 'ses-kayitlari-v2';
+const CACHE_NAME = 'giorgi-app-v1'; // Cache adını güncelledim
 const URLS_TO_CACHE = [
     'index.html',
+    'loading.html',
+    'app.html',
     'manifest.webmanifest'
 ];
 
@@ -20,17 +22,18 @@ self.addEventListener('install', event => {
 });
 
 // 2. Fetch (Ağ İsteklerini Yönetme)
-// Çevrimdışı-öncelikli (Offline-first) strateji
 self.addEventListener('fetch', event => {
+    // CDN ve Placeholder isteklerini her zaman ağdan al
+    if (event.request.url.startsWith('https://cdn.tailwindcss.com') || event.request.url.startsWith('https://placehold.co')) {
+        event.respondWith(fetch(event.request));
+        return;
+    }
+
+    // Diğer her şey için 'cache-first'
     event.respondWith(
         caches.match(event.request)
             .then(response => {
-                // Cache'de varsa, cache'den döndür
-                if (response) {
-                    return response;
-                }
-                // Cache'de yoksa, ağdan talep et
-                return fetch(event.request);
+                return response || fetch(event.request);
             })
             .catch(err => {
                 console.error('Fetch hatası:', err);
