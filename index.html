@@ -671,19 +671,15 @@ body {
         <span class="t">15:10 <span class="tick">✓✓</span></span>
     </div>
 
-    <a href="#" onclick="openLink(event, 'loading.html')" class="link-preview msg">
+   <div onclick="openLink('loading.html')" class="link-preview msg">
         <div class="link-preview-image">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5c-1.47-1.47-3.32-2.33-5.38-2.33-4.04 0-7.39 3.35-7.39 7.39 0 2.06.86 3.91 2.33 5.38.3.3.63.57.98.82A9.95 9.95 0 0 0 12 20.25a9.95 9.95 0 0 0 6.08-2.18c.35-.25.68-.52.98-.82 1.47-1.47 2.33-3.32 2.33-5.38 0-4.04-3.35-7.39-7.39-7.39-2.06 0-3.91.86-5.38 2.33Z" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 12.75a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
-            </svg>
-        </div>
+            </div>
         <div class="link-preview-content">
             <div class="link-preview-title">SES_KAYIT.zip</div>
             <div class="link-preview-desc">Güvenli Sunucu (4 Dosya)</div>
         </div>
         <span class="t">15:10</span>
-    </a>
+    </div>
 </main>
 
 <div class="inputwrap">
@@ -697,11 +693,8 @@ body {
 </div>
 
 <script>
-    // --- YENİ FONKSİYON: PWA İÇİNDE LİNK AÇMA ---
-    function openLink(event, url) {
-        // Tarayıcının normal linki takip etmesini engelle
-        event.preventDefault();
-        
+    // --- PWA İÇİNDE LİNK AÇMA (DÜZELTİLDİ: 'event' kaldırıldı) ---
+    function openLink(url) {
         // Linki PWA'nın kendi penceresinde aç
         window.location.href = url;
     }
