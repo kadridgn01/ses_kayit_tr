@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ses Kayıtları</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- PWA Manifest Bağlantısı -->
+    <link rel="manifest" href="manifest.webmanifest">
+    
+    <!-- PWA için iOS Desteği -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Ses Kayıtları">
+    <link rel="apple-touch-icon" href="icon-192.png"> <!-- Gerçek icon dosyanızla değiştirin -->
+    
+    <!-- Tema Rengi -->
+    <meta name="theme-color" content="#3b82f6">
+
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+            background-color: #f3f4f6; /* bg-gray-100 */
+        }
+        
+        /* Özel Ses Oynatıcı Stilleri */
+        .audio-player {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background-color: #f9fafb; /* bg-gray-50 */
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb; /* border-gray-200 */
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+        }
+        .play-pause-btn {
+            flex-shrink: 0;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: #3b82f6; /* bg-blue-500 */
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .play-pause-btn:hover {
+            background-color: #2563eb; /* bg-blue-600 */
+        }
+        .play-pause-btn .pause-icon { display: none; }
+        .play-pause-btn .play-icon { display: block; }
+        .play-pause-btn.playing .pause-icon { display: block; }
+        .play-pause-btn.playing .play-icon { display: none; }
+
+        .player-controls {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .player-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .player-title {
+            font-weight: 600;
+            color: #1f2937; /* text-gray-800 */
+        }
+        .time-display {
+            font-size: 0.875rem; /* text-sm */
+            color: #6b7280; /* text-gray-500 */
+            font-variant-numeric: tabular-nums;
+        }
+        progress {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        progress::-webkit-progress-bar {
+            background-color: #e5e7eb; /* bg-gray-200 */
+            border-radius: 4px;
+        }
+        progress::-webkit-progress-value {
+            background-color: #3b82f6; /* bg-blue-500 */
+            border-radius: 4px;
+            transition: width 0.1s linear;
+        }
+        progress::-moz-progress-bar {
+            background-color: #3b82f6; /* bg-blue-500 */
+            border-radius: 4px;
+            transition: width 0.1s linear;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="container mx-auto max-w-lg min-h-screen bg-white shadow-lg">
+
+        <!-- Başlık ve Zaman Bilgisi -->
+        <header class="text-center p-5 pb-4 border-b border-gray-200">
+            <h1 class="text-3xl font-bold text-gray-800">Ses Kayıtlarınız</h1>
+            <p class="text-sm text-gray-500 mt-2">15:10 itibarıyla gelen mesajınız.</p>
+        </header>
+
+        <!-- Sayfa Konteyneri -->
+        <main class="p-5">
+
+            <!-- Sadece Türkçe Kayıtlar -->
+            <div id="page-tr" class="space-y-5">
+                <p class="text-gray-600 text-center mb-4">Lütfen dinlemek istediğiniz kaydı seçin.</p>
+                
+                <!-- Oynatıcı 1 (Hayali) - 1dk 15sn -->
+                <div class="audio-player" data-player-id="tr-1" data-duration-seconds="75">
+                    <div class="player-status">
+                        <button class="play-pause-btn">
+                            <svg class="play-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+                            <svg class="pause-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 001-1V8a1 1 0 00-1-1H8zm3 0a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 001-1V8a1 1 0 00-1-1h-1z" clip-rule="evenodd"></path></svg>
+                        </button>
+                    </div>
+                    <div class="player-controls">
+                        <div class="player-info">
+                            <span class="player-title">Kayıt 1</span>
+                            <span class="time-display">00:00 / 01:15</span>
+                        </div>
+                        <progress value="0" max="100"></progress>
+                    </div>
+                </div>
+                
+                <!-- Oynatıcı 2 (Hayali) - 1dk 45sn -->
+                <div class="audio-player" data-player-id="tr-2" data-duration-seconds="105">
+                    <div class="player-status">
+                        <button class="play-pause-btn">
+                            <svg class="play-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+                            <svg class="pause-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 001-1V8a1 1 0 00-1-1H8zm3 0a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 001-1V8a1 1 0 00-1-1h-1z" clip-rule="evenodd"></path></svg>
+                        </button>
+                    </div>
+                    <div class="player-controls">
+                        <div class="player-info">
+                            <span class="player-title">Kayıt 2</span>
+                            <span class="time-display">00:00 / 01:45</span>
+                        </div>
+                        <progress value="0" max="100"></progress>
+                    </div>
+                </div>
+
+                <!-- Oynatıcı 3 (Hayali) - 1dk 30sn -->
+                <div class="audio-player" data-player-id="tr-3" data-duration-seconds="90">
+                    <div class="player-status">
+                        <button class="play-pause-btn">
+                            <svg class="play-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+                            <svg class="pause-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 001-1V8a1 1 0 00-1-1H8zm3 0a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 001-1V8a1 1 0 00-1-1h-1z" clip-rule="evenodd"></path></svg>
+                        </button>
+                    </div>
+                    <div class="player-controls">
+                        <div class="player-info">
+                            <span class="player-title">Kayıt 3</span>
+                            <span class="time-display">00:00 / 01:30</span>
+                        </div>
+                        <progress value="0" max="100"></progress>
+                    </div>
+                </div>
+
+                <!-- Oynatıcı 4 (Hayali) - 1dk 50sn -->
+                <div class="audio-player" data-player-id="tr-4" data-duration-seconds="110">
+                    <div class="player-status">
+                        <button class="play-pause-btn">
+                            <svg class="play-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+                            <svg class="pause-icon w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 001-1V8a1 1 0 00-1-1H8zm3 0a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 001-1V8a1 1 0 00-1-1h-1z" clip-rule="evenodd"></path></svg>
+                        </button>
+                    </div>
+                    <div class="player-controls">
+                        <div class="player-info">
+                            <span class="player-title">Kayıt 4</span>
+                            <span class="time-display">00:00 / 01:50</span>
+                        </div>
+                        <progress value="0" max="100"></progress>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- "Hayali" Oynatıcı Simülasyonu ---
+
+        const playerStates = {};
+        const TICK_INTERVAL = 100; // 100ms'de bir (saniyede 10 kez)
+
+        // Saniyeyi "mm:ss" formatına çevirir
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Tüm oynatıcıları hazırla
+        document.querySelectorAll('.audio-player').forEach(playerElement => {
+            const playerId = playerElement.dataset.playerId;
+            const totalDuration = parseInt(playerElement.dataset.durationSeconds, 10);
+
+            // Başlangıç durumunu ayarla
+            playerStates[playerId] = {
+                state: 'idle', // idle, playing, paused
+                currentTime: 0,
+                totalDuration: totalDuration,
+                progressInterval: null,
+                ui: {
+                    btn: playerElement.querySelector('.play-pause-btn'),
+                    time: playerElement.querySelector('.time-display'),
+                    progress: playerElement.querySelector('progress'),
+                }
+            };
+
+            // Başlangıç zamanını ayarla
+            playerStates[playerId].ui.time.textContent = `00:00 / ${formatTime(totalDuration)}`;
+
+            // Tıklama olayını ata
+            playerStates[playerId].ui.btn.onclick = () => handlePlayPause(playerId);
+        });
+
+        // Oynat/Duraklat Butonu
+        function handlePlayPause(playerId) {
+            const state = playerStates[playerId];
+            
+            // Eğer oynuyorsa: Duraklat
+            if (state.state === 'playing') {
+                pauseAudio(playerId);
+            } 
+            // Eğer duraklatıldıysa veya boşta ise: Oynat
+            else if (state.state === 'idle' || state.state === 'paused') {
+                playAudio(playerId);
+            }
+        }
+
+        // Simülasyonu Başlat
+        function playAudio(playerId) {
+            const state = playerStates[playerId];
+            
+            // Diğer tüm oynatıcıları duraklat (opsiyonel, ama daha iyi bir deneyim)
+            Object.keys(playerStates).forEach(id => {
+                if (id !== playerId && playerStates[id].state === 'playing') {
+                    pauseAudio(id);
+                }
+            });
+
+            state.state = 'playing';
+            state.ui.btn.classList.add('playing');
+            
+            // Zamanlayıcıyı başlat
+            state.progressInterval = setInterval(() => {
+                updateProgress(playerId);
+            }, TICK_INTERVAL);
+        }
+
+        // Simülasyonu Duraklat
+        function pauseAudio(playerId) {
+            const state = playerStates[playerId];
+            state.state = 'paused';
+            state.ui.btn.classList.remove('playing');
+            
+            // Zamanlayıcıyı durdur
+            if (state.progressInterval) {
+                clearInterval(state.progressInterval);
+                state.progressInterval = null;
+            }
+        }
+
+        // Süreyi ve Çubuğu Güncelle
+        function updateProgress(playerId) {
+            const state = playerStates[playerId];
+            
+            // Süreyi 100ms (0.1sn) artır
+            state.currentTime += (TICK_INTERVAL / 1000);
+
+            // Eğer süre bittiyse, sıfırla
+            if (state.currentTime >= state.totalDuration) {
+                resetPlayer(playerId);
+            } 
+            // Süre devam ediyorsa, UI'ı güncelle
+            else {
+                state.ui.time.textContent = `${formatTime(state.currentTime)} / ${formatTime(state.totalDuration)}`;
+                state.ui.progress.value = (state.currentTime / state.totalDuration) * 100;
+            }
+        }
+
+        // Oynatıcıyı Sıfırla (Ses bitince)
+        function resetPlayer(playerId) {
+            pauseAudio(playerId); // Önce zamanlayıcıyı durdur
+            
+            const state = playerStates[playerId];
+            state.state = 'idle';
+            state.currentTime = 0;
+            
+            // UI'ı başa sar
+            state.ui.time.textContent = `00:00 / ${formatTime(state.totalDuration)}`;
+            state.ui.progress.value = 0;
+        }
+
+        // --- Service Worker Kaydı ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker başarıyla kaydedildi: ', registration.scope);
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker kaydı başarısız: ', err);
+                    });
+            });
+        }
+
+    </script>
+</body>
+</html>
