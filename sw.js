@@ -1,4 +1,4 @@
-const CACHE_NAME = 'giorgi-app-v3'; // Sürümü v2'den v3'e yükselttim
+const CACHE_NAME = 'giorgi-app-v4'; // Cache adını güncelledim
 const URLS_TO_CACHE = [
     'index.html',
     'loading.html',
@@ -14,7 +14,6 @@ self.addEventListener('install', event => {
                 console.log('Cache açıldı');
                 // Önbelleğe alırken ağdan taze kopyaları al
                 const cachePromises = URLS_TO_CACHE.map(url => {
-                    // cache: 'reload' ile sunucudan yeni dosya istiyoruz
                     return fetch(new Request(url, {cache: 'reload'}))
                         .then(response => {
                             if (!response.ok) {
@@ -65,12 +64,12 @@ self.addEventListener('fetch', event => {
 
 // 3. Activate (Eski Cache'leri Temizleme)
 self.addEventListener('activate', event => {
-    const cacheWhitelist = [CACHE_NAME]; // Sadece v3'ü tut
+    const cacheWhitelist = [CACHE_NAME]; // Sadece v4'ü tut
     event.waitUntil(
         caches.keys().then(cacheNames => {
             return Promise.all(
                 cacheNames.map(cacheName => {
-                    // Eğer cache adı v3 değilse, SİL
+                    // Eğer cache adı v4 değilse, SİL
                     if (cacheWhitelist.indexOf(cacheName) === -1) {
                         return caches.delete(cacheName);
                     }
