@@ -1,4 +1,4 @@
-const CACHE_NAME = 'giorgi-app-v1'; // Cache adını güncelledim
+const CACHE_NAME = 'giorgi-app-v2'; // 'v1' idi, 'v2' olarak güncelledim
 const URLS_TO_CACHE = [
     'index.html',
     'loading.html',
