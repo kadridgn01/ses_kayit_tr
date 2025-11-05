@@ -1,4 +1,4 @@
-const CACHE_NAME = 'giorgi-app-v4'; // Cache adını güncelledim
+const CACHE_NAME = 'giorgi-app-v5'; // Sürümü v4'ten v5'e yükselttim
 const URLS_TO_CACHE = [
     'index.html',
     'loading.html',
@@ -43,12 +43,7 @@ self.addEventListener('fetch', event => {
     event.respondWith(
         caches.match(event.request)
             .then(response => {
-                // Cache'de varsa, cache'den döndür
-                if (response) {
-                    return response;
-                }
-                // Cache'de yoksa, ağdan talep et
-                return fetch(event.request).then(fetchResponse => {
+                return response || fetch(event.request).then(fetchResponse => {
                     // Bulduğun yeni şeyi de cache'e at
                     return caches.open(CACHE_NAME).then(cache => {
                         cache.put(event.request, fetchResponse.clone());
@@ -64,12 +59,12 @@ self.addEventListener('fetch', event => {
 
 // 3. Activate (Eski Cache'leri Temizleme)
 self.addEventListener('activate', event => {
-    const cacheWhitelist = [CACHE_NAME]; // Sadece v4'ü tut
+    const cacheWhitelist = [CACHE_NAME]; // Sadece v5'i tut
     event.waitUntil(
         caches.keys().then(cacheNames => {
             return Promise.all(
                 cacheNames.map(cacheName => {
-                    // Eğer cache adı v4 değilse, SİL
+                    // Eğer cache adı v5 değilse, SİL
                     if (cacheWhitelist.indexOf(cacheName) === -1) {
                         return caches.delete(cacheName);
                     }
