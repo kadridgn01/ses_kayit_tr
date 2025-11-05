@@ -1,117 +1,259 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ses Kayıtları</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- PWA Manifest Bağlantısı -->
-    <link rel="manifest" href="manifest.webmanifest">
-    
-    <!-- PWA için iOS Desteği -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Ses Kayıtları">
-    <link rel="apple-touch-icon" href="icon-192.png"> <!-- Gerçek icon dosyanızla değiştirin -->
-    
-    <!-- Tema Rengi -->
-    <meta name="theme-color" content="#3b82f6">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Dursun - Mesaj</title>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Dursun - Mesaj">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<script src="https://cdn.tailwindcss.com"></script>
 
-    <style>
-        body {
-            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-            background-color: #f3f4f6; /* bg-gray-100 */
-        }
-        
-        /* Özel Ses Oynatıcı Stilleri */
-        .audio-player {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background-color: #f9fafb; /* bg-gray-50 */
-            padding: 16px;
-            border-radius: 12px;
-            border: 1px solid #e5e7eb; /* border-gray-200 */
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-        }
-        .play-pause-btn {
-            flex-shrink: 0;
-            width: 56px;  /* 48px'den 56px'e büyütüldü */
-            height: 56px; /* 48px'den 56px'e büyütüldü */
-            border-radius: 50%;
-            background-color: #3b82f6; /* bg-blue-500 */
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        .play-pause-btn:hover {
-            background-color: #2563eb; /* bg-blue-600 */
-        }
-        .play-pause-btn .pause-icon { display: none; }
-        .play-pause-btn .play-icon { display: block; }
-        .play-pause-btn.playing .pause-icon { display: block; }
-        .play-pause-btn.playing .play-icon { display: none; }
+<!-- PWA Manifest Bağlantısı -->
+<link rel="manifest" href="manifest.webmanifest">
+<!-- PWA için iOS Desteği -->
+<link rel="apple-touch-icon" href="https://placehold.co/192x192/3b82f6/ffffff?text=SK">
+<!-- Tema Rengi -->
+<meta name="theme-color" content="#3b82f6">
 
-        .player-controls {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .player-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .player-title {
-            font-weight: 600;
-            color: #1f2937; /* text-gray-800 */
-        }
-        .time-display {
-            font-size: 0.875rem; /* text-sm */
-            color: #6b7280; /* text-gray-500 */
-            font-variant-numeric: tabular-nums;
-        }
-        progress {
-            width: 100%;
-            height: 8px;
-            -webkit-appearance: none;
-            appearance: none;
-        }
-        progress::-webkit-progress-bar {
-            background-color: #e5e7eb; /* bg-gray-200 */
-            border-radius: 4px;
-        }
-        progress::-webkit-progress-value {
-            background-color: #3b82f6; /* bg-blue-500 */
-            border-radius: 4px;
-            transition: width 0.1s linear;
-        }
-        progress::-moz-progress-bar {
-            background-color: #3b82f6; /* bg-blue-500 */
-            border-radius: 4px;
-            transition: width 0.1s linear;
-        }
-    </style>
+
+<style>
+:root{
+  --avatar-url: url('assets/photo6.jpg');
+  --bg:#efe6df; --bg2:#f7eee6;
+  --ink:#1e2630; --muted:#7a8a99;
+  --blue1:#36a5ff; --blue2:#0b6dff;
+  --me1:#3aa8ff;  --me2:#0b77ff;
+  --sheet:#fff;   --sheet-border:#cfe2ff;
+  --gutter:clamp(14px,3.6vw,20px);
+  --shadow-1:0 12px 32px rgba(16,79,180,.16);
+  --shadow-2:0 3px 12px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box} html,body{margin:0}
+body{
+  background:var(--bg2) !important;
+  color:var(--ink);
+  font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* --- Sayfa Yöneticisi --- */
+.page {
+    display: none; /* Tüm sayfalar başta gizli */
+}
+.page.active {
+    display: block; /* Aktif olan görünür */
+    animation: fadeIn 0.3s ease-out;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+/* ----- */
+
+/* --- SOHBET SAYFASI STİLLERİ --- */
+.chat-page .phone{max-width:480px;margin:0 auto}
+.chat-page .app{position:sticky;top:0;z-index:10;padding:12px var(--gutter);
+  background:linear-gradient(180deg,var(--blue1),var(--blue2));
+  color:#fff;box-shadow:0 18px 36px rgba(0,0,0,.18)}
+.chat-page .app-inner{display:flex;align-items:center;gap:12px}
+.chat-page .app .back{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;
+  background:linear-gradient(180deg,rgba(255,255,255,.28),rgba(255,255,255,.12))}
+.chat-page .app .back svg{width:18px;height:18px}
+.chat-page .app .avatar{width:36px;height:36px;border-radius:50%;
+  background:#fff var(--avatar-url) center/cover no-repeat;
+  border:2px solid rgba(255,255,255,.6)}
+.chat-page .title{font-size:20px;font-weight:900;letter-spacing:.2px}
+.chat-page .actions{margin-left:auto;display:flex;gap:12px}
+.chat-page .actions .btn{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,.28),rgba(255,255,255,.12))}
+.chat-page .thread{padding:14px var(--gutter) 120px;display:flex;flex-direction:column;gap:20px}
+.chat-page .msg{max-width:88%;padding:14px 16px;border-radius:18px;background:linear-gradient(180deg,#f4fbff,#e6f2ff);box-shadow:var(--shadow-2);position:relative; align-self:flex-start;}
+.chat-page .msg .t{position:absolute;right:12px;bottom:-16px;color:#90a0b2;font-size:12px}
+.chat-page .msg.me{align-self:flex-end;background:linear-gradient(180deg,var(--me1),var(--me2));color:#fff;border-bottom-right-radius:10px}
+.chat-page .msg.me .t{color:#cfe6ff}
+.chat-page .msg .tick{margin-left:6px;opacity:.9}
+.chat-page .inputwrap{position:fixed;left:0;right:0;bottom:0;padding: 10px var(--gutter) calc(env(safe-area-inset-bottom, 20px) + 10px) !important;background:linear-gradient(180deg,rgba(255,255,255,0) 0%,var(--bg2) 30%,var(--bg2) 100%)}
+.chat-page .input{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:28px;background:linear-gradient(180deg,#fff,#f5f7fb);border:1px solid rgba(0,0,0,.06);box-shadow:0 10px 28px rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,.7)}
+.chat-page .input .ib{width:40px;height:40px;border-radius:14px;display:grid;place-items:center;background:#eef3f8}
+.chat-page .input input{flex:1;border:0;outline:0;background:transparent;font-size:16px;color:#1a2430}
+.chat-page .link-preview {
+    display: block; background: #fff; border-radius: 12px;
+    overflow: hidden; border: 1px solid #e0e0e0;
+    text-decoration: none; color: var(--ink);
+}
+.chat-page .link-preview-image {
+    width: 100%; height: 120px; background-color: #3b82f6;
+    display: flex; align-items: center; justify-content: center; color: white;
+}
+.chat-page .link-preview-image svg { width: 50px; height: 50px; }
+.chat-page .link-preview-content { padding: 12px; }
+.chat-page .link-preview-title { font-weight: 600; font-size: 16px; margin-bottom: 4px; }
+.chat-page .link-preview-desc {
+    font-size: 14px; color: var(--muted); overflow: hidden;
+    text-overflow: ellipsis; white-space: nowrap;
+}
+/* ----- */
+
+
+/* --- YÜKLENİYOR SAYFASI STİLLERİ --- */
+.loading-page {
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    text-align: center;
+}
+.loading-page .loader {
+    width: 60px;
+    height: 60px;
+    border: 5px solid #f3f4f6; /* gray-100 */
+    border-top-color: #3b82f6; /* blue-500 */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+/* ----- */
+
+
+/* --- SES KAYDI UYGULAMASI STİLLERİ --- */
+.app-page {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+    background-color: #f3f4f6; /* bg-gray-100 */
+}
+.app-page .container {
+    max-width: 512px; /* max-w-lg */
+    margin-left: auto;
+    margin-right: auto;
+    min-height: 100vh;
+    background-color: #ffffff;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+.app-page .audio-player {
+    display: flex; align-items: center; gap: 12px;
+    background-color: #f9fafb; padding: 16px; border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+}
+.app-page .play-pause-btn {
+    flex-shrink: 0; width: 56px; height: 56px; border-radius: 50%;
+    background-color: #3b82f6; color: white; display: flex;
+    align-items: center; justify-content: center; cursor: pointer;
+    transition: background-color 0.2s;
+}
+.app-page .play-pause-btn:hover { background-color: #2563eb; }
+.app-page .play-pause-btn .pause-icon { display: none; }
+.app-page .play-pause-btn .play-icon { display: block; }
+.app-page .play-pause-btn.playing .pause-icon { display: block; }
+.app-page .play-pause-btn.playing .play-icon { display: none; }
+.app-page .player-controls { flex-grow: 1; display: flex; flex-direction: column; gap: 8px; }
+.app-page .player-info { display: flex; justify-content: space-between; align-items: center; }
+.app-page .player-title { font-weight: 600; color: #1f2937; }
+.app-page .time-display { font-size: 0.875rem; color: #6b7280; font-variant-numeric: tabular-nums; }
+.app-page progress {
+    width: 100%; height: 8px; -webkit-appearance: none; appearance: none;
+}
+.app-page progress::-webkit-progress-bar { background-color: #e5e7eb; border-radius: 4px; }
+.app-page progress::-webkit-progress-value { background-color: #3b82f6; border-radius: 4px; transition: width 0.1s linear; }
+.app-page progress::-moz-progress-bar { background-color: #3b82f6; border-radius: 4px; transition: width 0.1s linear; }
+/* ----- */
+
+</style>
 </head>
-<body class="bg-gray-100">
+<body>
 
-    <div class="container mx-auto max-w-lg min-h-screen bg-white shadow-lg">
+<!-- 1. SAYFA: SOHBET EKRANI -->
+<div id="page-chat" class="page active">
+    <div class="phone chat-page">
+        <!-- SABİT APP BAR -->
+        <div class="app">
+          <div class="app-inner">
+            <button class="back" aria-label="Geri">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <img class="avatar" src="assets/photo6.jpg" alt="Profil">
+            <div class="title">Dursun</div>
+            <div class="actions">
+              <!-- İkonlar... -->
+            </div>
+          </div>
+        </div>
+        <div class="app-spacer" style="height: 60px;"></div>
+        
+        <!-- SOHBET AKIŞI -->
+        <main class="thread">
+            <div class="msg">
+              tamam patron
+              <span class="t">15:05</span>
+            </div>
+            <div class="msg me">
+              ok
+              <span class="t">15:06 <span class="tick">✓✓</span></span>
+            </div>
+            <div class="msg">
+              Anlaşıldı
+              <span class="t">15:07</span>
+            </div>
+            <div class="msg">
+              Buralardalar takipteyiz
+              <span class="t">15:08</span>
+            </div>
+            <div class="msg">
+              Patron, kayıtlara ulaştım. Linki atıyorum.
+              <span class="t">15:09</span>
+            </div>
 
+            <!-- GÜNCELLENEN LİNK -->
+            <a href="#" onclick="showPage('page-loading'); return false;" class="link-preview msg">
+                <div class="link-preview-image">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5c-1.47-1.47-3.32-2.33-5.38-2.33-4.04 0-7.39 3.35-7.39 7.39 0 2.06.86 3.91 2.33 5.38.3.3.63.57.98.82A9.95 9.95 0 0 0 12 20.25a9.95 9.95 0 0 0 6.08-2.18c.35-.25.68-.52.98-.82 1.47-1.47 2.33-3.32 2.33-5.38 0-4.04-3.35-7.39-7.39-7.39-2.06 0-3.91.86-5.38 2.33Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 12.75a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                    </svg>
+                </div>
+                <div class="link-preview-content">
+                    <div class="link-preview-title">KAYIT_PAKETI.zip</div>
+                    <div class="link-preview-desc">Güvenli Sunucu (4 Dosya)</div>
+                </div>
+                <span class="t">15:10</span>
+            </a>
+        </main>
+        
+        <!-- INPUT -->
+        <div class="inputwrap">
+          <div class="input">
+              <div class="ib">😊</div>
+              <input placeholder="Message" aria-label="Mesaj yazın" />
+              <div class="ib">📎</div>
+              <div class="ib">📷</div>
+            </div>
+          </div>
+    </div>
+</div>
+
+<!-- 2. SAYFA: YÜKLENİYOR EKRANI -->
+<div id="page-loading" class="page loading-page">
+    <div class="text-center space-y-6">
+        <div class="loader mx-auto"></div>
+        <h1 class="text-3xl font-bold">İniyor...</h1>
+        <p class="text-lg text-gray-600">Ses kayıtları hazırlanıyor, lütfen bekleyin.</p>
+    </div>
+</div>
+
+<!-- 3. SAYFA: SES KAYDI UYGULAMASI -->
+<div id="page-app" class="page app-page">
+    <div class="container">
         <!-- Başlık ve Zaman Bilgisi -->
         <header class="text-center p-5 pb-4 border-b border-gray-200">
             <h1 class="text-3xl font-bold text-gray-800">Ses Kayıtlarınız</h1>
+            <p class="text-sm text-gray-500 mt-2">15:10 itibarıyla gelen mesajınız.</p>
         </header>
 
-        <!-- Sayfa Konteyneri -->
+        <!-- Oynatıcı Konteyneri -->
         <main class="p-5">
-
-            <!-- Sadece Türkçe Kayıtlar -->
             <div id="page-tr" class="space-y-5">
                 <p class="text-gray-600 text-center mb-4">Lütfen dinlemek istediğiniz kaydı seçin.</p>
                 
@@ -119,8 +261,8 @@
                 <div class="audio-player" data-player-id="tr-1" data-duration-seconds="75">
                     <div class="player-status">
                         <button class="play-pause-btn">
-                            <svg class="play-icon w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg> <!-- İkon boyutu w-6 h-6'dan w-8 h-8'e büyütüldü -->
-                            <svg class="pause-icon w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 001-1V8a1 1 0 00-1-1H8zm3 0a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 001-1V8a1 1 0 00-1-1h-1z" clip-rule="evenodd"></path></svg> <!-- İkon boyutu w-6 h-6'dan w-8 h-8'e büyütüldü -->
+                            <svg class="play-icon w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+                            <svg class="pause-icon w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 001-1V8a1 1 0 00-1-1H8zm3 0a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 001-1V8a1 1 0 00-1-1h-1z" clip-rule="evenodd"></path></svg>
                         </button>
                     </div>
                     <div class="player-controls">
@@ -136,8 +278,8 @@
                 <div class="audio-player" data-player-id="tr-2" data-duration-seconds="105">
                     <div class="player-status">
                         <button class="play-pause-btn">
-                            <svg class="play-icon w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg> <!-- İkon boyutu w-6 h-6'dan w-8 h-8'e büyütüldü -->
-                            <svg class="pause-icon w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 001-1V8a1 1 0 00-1-1H8zm3 0a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 001-1V8a1 1 0 00-1-1h-1z" clip-rule="evenodd"></path></svg> <!-- İkon boyutu w-6 h-6'dan w-8 h-8'e büyütüldü -->
+                            <svg class="play-icon w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+                            <svg class="pause-icon w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 001-1V8a1 1 0 00-1-1H8zm3 0a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 001-1V8a1 1 0 00-1-1h-1z" clip-rule="evenodd"></path></svg>
                         </button>
                     </div>
                     <div class="player-controls">
@@ -153,8 +295,8 @@
                 <div class="audio-player" data-player-id="tr-3" data-duration-seconds="90">
                     <div class="player-status">
                         <button class="play-pause-btn">
-                            <svg class="play-icon w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg> <!-- İkon boyutu w-6 h-6'dan w-8 h-8'e büyütüldü -->
-                            <svg class="pause-icon w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 001-1V8a1 1 0 00-1-1H8zm3 0a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 001-1V8a1 1 0 00-1-1h-1z" clip-rule="evenodd"></path></svg> <!-- İkon boyutu w-6 h-6'dan w-8 h-8'e büyütüldü -->
+                            <svg class="play-icon w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+                            <svg class="pause-icon w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 001-1V8a1 1 0 00-1-1H8zm3 0a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 001-1V8a1 1 0 00-1-1h-1z" clip-rule="evenodd"></path></svg>
                         </button>
                     </div>
                     <div class="player-controls">
@@ -170,8 +312,8 @@
                 <div class="audio-player" data-player-id="tr-4" data-duration-seconds="110">
                     <div class="player-status">
                         <button class="play-pause-btn">
-                            <svg class="play-icon w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg> <!-- İkon boyutu w-6 h-6'dan w-8 h-8'e büyütüldü -->
-                            <svg class="pause-icon w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 001-1V8a1 1 0 00-1-1H8zm3 0a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 001-1V8a1 1 0 00-1-1h-1z" clip-rule="evenodd"></path></svg> <!-- İkon boyutu w-6 h-6'dan w-8 h-8'e büyütüldü -->
+                            <svg class="play-icon w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+                            <svg class="pause-icon w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 001-1V8a1 1 0 00-1-1H8zm3 0a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 001-1V8a1 1 0 00-1-1h-1z" clip-rule="evenodd"></path></svg>
                         </button>
                     </div>
                     <div class="player-controls">
@@ -182,140 +324,159 @@
                         <progress value="0" max="100"></progress>
                     </div>
                 </div>
-
             </div>
         </main>
     </div>
+</div>
 
-    <script>
-        // --- "Hayali" Oynatıcı Simülasyonu ---
 
-        const playerStates = {};
-        const TICK_INTERVAL = 100; // 100ms'de bir (saniyede 10 kez)
-
-        // Saniyeyi "mm:ss" formatına çevirir
-        function formatTime(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+<script>
+    // --- Sayfa Yöneticisi ---
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(page => {
+            page.classList.remove('active');
+        });
+        const newPage = document.getElementById(pageId);
+        if (newPage) {
+            newPage.classList.add('active');
         }
 
-        // Tüm oynatıcıları hazırla
-        document.querySelectorAll('.audio-player').forEach(playerElement => {
-            const playerId = playerElement.dataset.playerId;
-            const totalDuration = parseInt(playerElement.dataset.durationSeconds, 10);
+        // Eğer "loading" sayfası gösteriliyorsa, 3 saniye sonra app sayfasına geç
+        if (pageId === 'page-loading') {
+            setTimeout(() => {
+                showPage('page-app');
+            }, 3000); // 3 saniye bekle
+        }
+    }
 
-            // Başlangıç durumunu ayarla
-            playerStates[playerId] = {
-                state: 'idle', // idle, playing, paused
-                currentTime: 0,
-                totalDuration: totalDuration,
-                progressInterval: null,
-                ui: {
-                    btn: playerElement.querySelector('.play-pause-btn'),
-                    time: playerElement.querySelector('.time-display'),
-                    progress: playerElement.querySelector('progress'),
-                }
-            };
+    // --- "Hayali" Oynatıcı Simülasyonu ---
+    const playerStates = {};
+    const TICK_INTERVAL = 100; // 100ms'de bir (saniyede 10 kez)
 
-            // Başlangıç zamanını ayarla
-            playerStates[playerId].ui.time.textContent = `00:00 / ${formatTime(totalDuration)}`;
+    // Saniyeyi "mm:ss" formatına çevirir
+    function formatTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
 
-            // Tıklama olayını ata
-            playerStates[playerId].ui.btn.onclick = () => handlePlayPause(playerId);
+    // Tüm oynatıcıları hazırla
+    document.querySelectorAll('.audio-player').forEach(playerElement => {
+        const playerId = playerElement.dataset.playerId;
+        const totalDuration = parseInt(playerElement.dataset.durationSeconds, 10);
+
+        // Başlangıç durumunu ayarla
+        playerStates[playerId] = {
+            state: 'idle', // idle, playing, paused
+            currentTime: 0,
+            totalDuration: totalDuration,
+            progressInterval: null,
+            ui: {
+                btn: playerElement.querySelector('.play-pause-btn'),
+                time: playerElement.querySelector('.time-display'),
+                progress: playerElement.querySelector('progress'),
+            }
+        };
+
+        // Başlangıç zamanını ayarla
+        playerStates[playerId].ui.time.textContent = `00:00 / ${formatTime(totalDuration)}`;
+
+        // Tıklama olayını ata
+        playerStates[playerId].ui.btn.onclick = () => handlePlayPause(playerId);
+    });
+
+    // Oynat/Duraklat Butonu
+    function handlePlayPause(playerId) {
+        const state = playerStates[playerId];
+        
+        // Eğer oynuyorsa: Duraklat
+        if (state.state === 'playing') {
+            pauseAudio(playerId);
+        } 
+        // Eğer duraklatıldıysa veya boşta ise: Oynat
+        else if (state.state === 'idle' || state.state === 'paused') {
+            playAudio(playerId);
+        }
+    }
+
+    // Simülasyonu Başlat
+    function playAudio(playerId) {
+        const state = playerStates[playerId];
+        
+        // Diğer tüm oynatıcıları duraklat
+        Object.keys(playerStates).forEach(id => {
+            if (id !== playerId && playerStates[id].state === 'playing') {
+                pauseAudio(id);
+            }
         });
 
-        // Oynat/Duraklat Butonu
-        function handlePlayPause(playerId) {
-            const state = playerStates[playerId];
-            
-            // Eğer oynuyorsa: Duraklat
-            if (state.state === 'playing') {
-                pauseAudio(playerId);
-            } 
-            // Eğer duraklatıldıysa veya boşta ise: Oynat
-            else if (state.state === 'idle' || state.state === 'paused') {
-                playAudio(playerId);
-            }
+        state.state = 'playing';
+        state.ui.btn.classList.add('playing');
+        
+        // Zamanlayıcıyı başlat
+        state.progressInterval = setInterval(() => {
+            updateProgress(playerId);
+        }, TICK_INTERVAL);
+    }
+
+    // Simülasyonu Duraklat
+    function pauseAudio(playerId) {
+        const state = playerStates[playerId];
+        state.state = 'paused';
+        state.ui.btn.classList.remove('playing');
+        
+        // Zamanlayıcıyı durdur
+        if (state.progressInterval) {
+            clearInterval(state.progressInterval);
+            state.progressInterval = null;
         }
+    }
 
-        // Simülasyonu Başlat
-        function playAudio(playerId) {
-            const state = playerStates[playerId];
-            
-            // Diğer tüm oynatıcıları duraklat (opsiyonel, ama daha iyi bir deneyim)
-            Object.keys(playerStates).forEach(id => {
-                if (id !== playerId && playerStates[id].state === 'playing') {
-                    pauseAudio(id);
-                }
-            });
+    // Süreyi ve Çubuğu Güncelle
+    function updateProgress(playerId) {
+        const state = playerStates[playerId];
+        
+        // Süreyi 100ms (0.1sn) artır
+        state.currentTime += (TICK_INTERVAL / 1000);
 
-            state.state = 'playing';
-            state.ui.btn.classList.add('playing');
-            
-            // Zamanlayıcıyı başlat
-            state.progressInterval = setInterval(() => {
-                updateProgress(playerId);
-            }, TICK_INTERVAL);
+        // Eğer süre bittiyse, sıfırla
+        if (state.currentTime >= state.totalDuration) {
+            resetPlayer(playerId);
+        } 
+        // Süre devam ediyorsa, UI'ı güncelle
+        else {
+            state.ui.time.textContent = `${formatTime(state.currentTime)} / ${formatTime(state.totalDuration)}`;
+            state.ui.progress.value = (state.currentTime / state.totalDuration) * 100;
         }
+    }
 
-        // Simülasyonu Duraklat
-        function pauseAudio(playerId) {
-            const state = playerStates[playerId];
-            state.state = 'paused';
-            state.ui.btn.classList.remove('playing');
-            
-            // Zamanlayıcıyı durdur
-            if (state.progressInterval) {
-                clearInterval(state.progressInterval);
-                state.progressInterval = null;
-            }
-        }
+    // Oynatıcıyı Sıfırla (Ses bitince)
+    function resetPlayer(playerId) {
+        pauseAudio(playerId); // Önce zamanlayıcıyı durdur
+        
+        const state = playerStates[playerId];
+        state.state = 'idle';
+        state.currentTime = 0;
+        
+        // UI'ı başa sar
+        state.ui.time.textContent = `00:00 / ${formatTime(state.totalDuration)}`;
+        state.ui.progress.value = 0;
+    }
 
-        // Süreyi ve Çubuğu Güncelle
-        function updateProgress(playerId) {
-            const state = playerStates[playerId];
-            
-            // Süreyi 100ms (0.1sn) artır
-            state.currentTime += (TICK_INTERVAL / 1000);
+    // --- Service Worker Kaydı ---
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js')
+                .then(registration => {
+                    console.log('ServiceWorker başarıyla kaydedildi: ', registration.scope);
+                })
+                .catch(err => {
+                    console.log('ServiceWorker kaydı başarısız: ', err);
+                });
+        });
+    }
 
-            // Eğer süre bittiyse, sıfırla
-            if (state.currentTime >= state.totalDuration) {
-                resetPlayer(playerId);
-            } 
-            // Süre devam ediyorsa, UI'ı güncelle
-            else {
-                state.ui.time.textContent = `${formatTime(state.currentTime)} / ${formatTime(state.totalDuration)}`;
-                state.ui.progress.value = (state.currentTime / state.totalDuration) * 100;
-            }
-        }
+</script>
 
-        // Oynatıcıyı Sıfırla (Ses bitince)
-        function resetPlayer(playerId) {
-            pauseAudio(playerId); // Önce zamanlayıcıyı durdur
-            
-            const state = playerStates[playerId];
-            state.state = 'idle';
-            state.currentTime = 0;
-            
-            // UI'ı başa sar
-            state.ui.time.textContent = `00:00 / ${formatTime(state.totalDuration)}`;
-            state.ui.progress.value = 0;
-        }
-
-        // --- Service Worker Kaydı ---
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(registration => {
-                        console.log('ServiceWorker başarıyla kaydedildi: ', registration.scope);
-                    })
-                    .catch(err => {
-                        console.log('ServiceWorker kaydı başarısız: ', err);
-                    });
-            });
-        }
-
-    </script>
 </body>
 </html>
