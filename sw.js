@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ses-kayitlari-v1';
+const CACHE_NAME = 'ses-kayitlari-v2';
 const URLS_TO_CACHE = [
     'index.html',
     'manifest.webmanifest'
