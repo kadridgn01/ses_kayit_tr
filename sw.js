@@ -12,7 +12,12 @@ self.addEventListener('install', event => {
         caches.open(CACHE_NAME)
             .then(cache => {
                 console.log('Cache açıldı');
-                return cache.addAll(URLS_TO_CACHE);
+                // Önbelleğe alırken ağdan taze kopyaları al
+                const cachePromises = URLS_TO_CACHE.map(url => {
+                    return fetch(new Request(url, {cache: 'reload'}))
+                        .then(response => cache.put(url, response));
+                });
+                return Promise.all(cachePromises);
             })
             .catch(err => {
                 console.error('Cache ekleme hatası:', err);
@@ -33,7 +38,13 @@ self.addEventListener('fetch', event => {
     event.respondWith(
         caches.match(event.request)
             .then(response => {
-                return response || fetch(event.request);
+                return response || fetch(event.request).then(fetchResponse => {
+                    // Yeni bir şey bulunursa cache'i güncelle
+                    return caches.open(CACHE_NAME).then(cache => {
+                        cache.put(event.request, fetchResponse.clone());
+                        return fetchResponse;
+                    });
+                });
             })
             .catch(err => {
                 console.error('Fetch hatası:', err);
