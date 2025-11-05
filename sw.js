@@ -1,4 +1,4 @@
-const CACHE_NAME = 'levan-app-v8'; // Sürümü v4'ten v5'e yükselttim
+const CACHE_NAME = 'levan-app-v8'; // Sürümü güncelledim
 const URLS_TO_CACHE = [
     'index.html',
     'loading.html',
@@ -59,12 +59,12 @@ self.addEventListener('fetch', event => {
 
 // 3. Activate (Eski Cache'leri Temizleme)
 self.addEventListener('activate', event => {
-    const cacheWhitelist = [CACHE_NAME]; // Sadece v5'i tut
+    const cacheWhitelist = [CACHE_NAME]; // Sadece v8'i tut
     event.waitUntil(
         caches.keys().then(cacheNames => {
             return Promise.all(
                 cacheNames.map(cacheName => {
-                    // Eğer cache adı v5 değilse, SİL
+                    // Eğer cache adı v8 değilse, SİL
                     if (cacheWhitelist.indexOf(cacheName) === -1) {
                         return caches.delete(cacheName);
                     }
