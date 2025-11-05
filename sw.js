@@ -1,4 +1,4 @@
-const CACHE_NAME = 'giorgi-app-v6'; // Sürümü v4'ten v5'e yükselttim
+const CACHE_NAME = 'giorgi-app-v7'; // Sürümü v4'ten v5'e yükselttim
 const URLS_TO_CACHE = [
     'index.html',
     'loading.html',
