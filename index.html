@@ -4,7 +4,6 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 <title>Giorgi - Mesaj</title>
-<!-- PWA Manifest -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Giorgi">
@@ -17,9 +16,10 @@
 :root{
   /* Avatarı 'G' olarak güncelledim */
   --avatar-url: url('https://placehold.co/100x100/E2E8F0/4A5568?text=G');
-  --bg:#efe6df; --bg2:#f7eee6;
+  --bg:#efe6df; --bg2:#f7eee6; /* Referansınızdaki bej arka plan */
   --ink:#1e2630; --muted:#7a8a99;
-  --blue1:#36a5ff; --blue2:#0b6dff;
+  --blue1:#36a5ff; /* Referansınızdaki parlak mavi */
+  --blue2:#0b6dff;
   --me1:#3aa8ff;  --me2:#0b77ff;
   --sheet:#fff;   --sheet-border:#cfe2ff;
   --gutter:clamp(14px,3.6vw,20px);
@@ -28,7 +28,7 @@
 }
 *{box-sizing:border-box} html,body{margin:0}
 body{
-  background:var(--bg2) !important;
+  background:var(--bg2) !important; /* Arka planı bej yap */
   color:var(--ink);
   font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
   -webkit-font-smoothing:antialiased;
@@ -37,9 +37,8 @@ body{
 
 /* APP BAR */
 .app{position:sticky;top:0;z-index:10;padding:12px var(--gutter);
-  /* ESKİ KOD: background:linear-gradient(180deg,var(--blue1),var(--blue2)); */
-  /* YENİ KOD: Sadece açık maviyi kullan */
-  background:var(--blue1);
+  /* --- İSTEDİĞİNİZ RENK DÜZELTMESİ --- */
+  background: var(--blue1); /* Koyu gradyan yerine düz parlak mavi */
   color:#fff;box-shadow:0 18px 36px rgba(0,0,0,.18)}
 .app-inner{display:flex;align-items:center;gap:12px}
 .app .back{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;
@@ -61,6 +60,24 @@ body{
 .msg.me{align-self:flex-end;background:linear-gradient(180deg,var(--me1),var(--me2));color:#fff;border-bottom-right-radius:10px}
 .msg.me .t{color:#cfe6ff}
 .msg .tick{margin-left:6px;opacity:.9}
+
+/* FOTO (Hamsi) */
+.photo-card{
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  max-width: 40% !important; /* Hamsi GIF boyutu */
+  align-self: flex-start;
+}
+.photo{
+  display:block; overflow:hidden; border-radius:16px;
+  aspect-ratio: 1 / 1; background:#e6edf5; position:relative;
+}
+.photo img{
+  width:100%; height:100%; object-fit:cover;
+  object-position:center; display:block;
+}
 
 /* INPUT BAR */
 .inputwrap{position:fixed;left:0;right:0;bottom:0;padding: 10px var(--gutter) calc(env(safe-area-inset-bottom, 20px) + 10px) !important;background:linear-gradient(180deg,rgba(255,255,255,0) 0%,var(--bg2) 30%,var(--bg2) 100%)}
@@ -89,7 +106,6 @@ body{
 </head>
 <body>
 <div class="phone">
-<!-- SABİT APP BAR -->
 <div class="app">
   <div class="app-inner">
     <button class="back" aria-label="Geri">
@@ -105,10 +121,8 @@ body{
 </div>
 <div class="app-spacer" style="height: 60px;"></div>
 
-<!-- SOHBET AKIŞI (Temizlendi) -->
 <main class="thread">
     
-    <!-- YENİ KURGU MESAJLARI -->
     <div class="msg">
         tamam patron
         <span class="t">15:05</span>
@@ -130,7 +144,6 @@ body{
         <span class="t">15:09</span>
     </div>
 
-    <!-- LİNK (loading.html'e yönlendirir) -->
     <a href="loading.html" class="link-preview msg">
         <div class="link-preview-image">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -146,7 +159,6 @@ body{
     </a>
 </main>
 
-<!-- INPUT -->
 <div class="inputwrap">
   <div class="input">
       <div class="ib">😊</div>
@@ -162,8 +174,24 @@ body{
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('sw.js')
-                .then(registration => console.log('ServiceWorker başarıyla kaydedildi: ', registration.scope))
-                .catch(err => console.log('ServiceWorker kaydı başarısız: ', err));
+                .then(registration => {
+                    console.log('ServiceWorker başarıyla kaydedildi: ', registration.scope);
+                    // Yeni bir sürüm bulunduğunda sayfayı yenilemeyi tetikle
+                    registration.onupdatefound = () => {
+                        const installingWorker = registration.installing;
+                        if (installingWorker) {
+                            installingWorker.onstatechange = () => {
+                                if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // Yeni Sürüm yüklendi! Otomatik yenile.
+                                    window.location.reload();
+                                }
+                            };
+                        }
+                    };
+                })
+                .catch(err => {
+                    console.log('ServiceWorker kaydı başarısız: ', err);
+                });
         });
     }
 </script>
