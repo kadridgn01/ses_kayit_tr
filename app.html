@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yükleniyor...</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: #ffffff;
+        }
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 5px solid #f3f4f6; /* gray-100 */
+            border-top-color: #3b82f6; /* blue-500 */
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen text-gray-800">
+
+    <div class="text-center space-y-6">
+        <div class="loader mx-auto"></div>
+        <h1 class="text-3xl font-bold">İniyor...</h1>
+        <p class="text-lg text-gray-600">Ses kayıtları hazırlanıyor, lütfen bekleyin.</p>
+    </div>
+
+    <script>
+        // 3 saniye sonra 'app.html' (PWA) sayfasına yönlendir
+        setTimeout(() => {
+            // HATA DÜZELTMESİ: Tarayıcının dosyayı aynı dizinde bulması için './' eklendi.
+            window.location.href = './app.html';
+        }, 3000); // 3 saniye bekleme süresi
+    </script>
+</body>
+</html>
