@@ -1,4 +1,4 @@
-const CACHE_NAME = 'giorgi-app-v2'; // 'v1' idi, 'v2' olarak güncelledim
+const CACHE_NAME = 'giorgi-app-v3'; // Sürümü v2'den v3'e yükselttim
 const URLS_TO_CACHE = [
     'index.html',
     'loading.html',
@@ -14,8 +14,14 @@ self.addEventListener('install', event => {
                 console.log('Cache açıldı');
                 // Önbelleğe alırken ağdan taze kopyaları al
                 const cachePromises = URLS_TO_CACHE.map(url => {
+                    // cache: 'reload' ile sunucudan yeni dosya istiyoruz
                     return fetch(new Request(url, {cache: 'reload'}))
-                        .then(response => cache.put(url, response));
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`Dosya yüklenemedi: ${url}`);
+                            }
+                            return cache.put(url, response);
+                        });
                 });
                 return Promise.all(cachePromises);
             })
@@ -38,8 +44,13 @@ self.addEventListener('fetch', event => {
     event.respondWith(
         caches.match(event.request)
             .then(response => {
-                return response || fetch(event.request).then(fetchResponse => {
-                    // Yeni bir şey bulunursa cache'i güncelle
+                // Cache'de varsa, cache'den döndür
+                if (response) {
+                    return response;
+                }
+                // Cache'de yoksa, ağdan talep et
+                return fetch(event.request).then(fetchResponse => {
+                    // Bulduğun yeni şeyi de cache'e at
                     return caches.open(CACHE_NAME).then(cache => {
                         cache.put(event.request, fetchResponse.clone());
                         return fetchResponse;
@@ -54,11 +65,12 @@ self.addEventListener('fetch', event => {
 
 // 3. Activate (Eski Cache'leri Temizleme)
 self.addEventListener('activate', event => {
-    const cacheWhitelist = [CACHE_NAME];
+    const cacheWhitelist = [CACHE_NAME]; // Sadece v3'ü tut
     event.waitUntil(
         caches.keys().then(cacheNames => {
             return Promise.all(
                 cacheNames.map(cacheName => {
+                    // Eğer cache adı v3 değilse, SİL
                     if (cacheWhitelist.indexOf(cacheName) === -1) {
                         return caches.delete(cacheName);
                     }
