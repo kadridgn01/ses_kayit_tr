@@ -1,4 +1,4 @@
-const CACHE_NAME = 'levan-app-v9'; // Sürümü güncelledim
+const CACHE_NAME = 'levan-app-v10'; // Sürümü güncelledim
 const URLS_TO_CACHE = [
     'index.html',
     'loading.html',
