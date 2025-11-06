@@ -1,7 +1,7 @@
 {
-    "name": "Levan - Mesaj",
-    "short_name": "Levan",
-    "description": "Levan'dan gelen mesajlar ve kayıtlar.",
+    "name": "ლევანი - შეტყობინება",
+    "short_name": "ლევანი",
+    "description": "ლევანისგან მიღებული შეტყობინებები და ჩანაწერები.",
     "start_url": "index.html",
     "display": "standalone",
     "background_color": "#ffffff",
